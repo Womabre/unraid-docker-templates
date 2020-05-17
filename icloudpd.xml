@@ -43,7 +43,7 @@ Run the following command without quotes in a terminal to generate the 2FA cooki
     </Volume>
     <Volume>
       <HostDir></HostDir>
-      <ContainerDir>/home/user/icloud</ContainerDir>
+      <ContainerDir>/home/user/iCloud</ContainerDir>
       <Mode>rw,slave</Mode>
     </Volume>
   </Data>
