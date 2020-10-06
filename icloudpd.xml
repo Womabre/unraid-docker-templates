@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Container version="2">
+<Container version="3">
   <Name>icloudpd</Name>
   <Repository>boredazfcuk/icloudpd</Repository>
   <Registry>https://hub.docker.com/r/boredazfcuk/icloudpd/</Registry>
@@ -11,26 +11,28 @@
   <Project>https://github.com/Womabre/-unraid-docker-templates</Project>
   <Overview>An Alpine Linux Docker container for ndbroadbent's iCloud Photos Downloader writen by boredazfcuk&#xD;
 &#xD;
-Run the following command without quotes in a terminal to generate the 2FA cookie:&#xD;
-(Change the appdata path if necessary)&#xD;
+This version uses keyring based authentication by default. With keyring based authentication is enabled, the script will check for the presence of the keyring file. If it is not there, the script will pause with a warning for 5mins before exiting.&#xD;
+Please connect to the container and run the "/usr/local/bin/sync-icloud.sh" command manually to start the process of saving your password to the keyring. This will invoke 2FA and Apple will text a confirmation code which needs to be entered.&#xD;
 &#xD;
-"docker run -it --rm --network host --env user=user --env user_id=1000 --env group=admins --env group_id=1010 --env apple_id="my@apple_id.com" --env apple_password="PASSWORD" --volume /mnt/user/appdata/icloudpd:/config boredazfcuk/icloudpd"</Overview>
+Or run this command from the unRAID Terminal:&#xD;
+"docker exec -it icloudpd /usr/local/bin/sync-icloud.sh"</Overview>
   <Category>Backup: Cloud: Downloaders:</Category>
   <WebUI/>
-  <TemplateURL/>
+  <TemplateURL>https://raw.githubusercontent.com/Womabre/unraid-docker-templates/master/icloudpd.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/Womabre/-unraid-docker-templates/master/images/photos_icon_large.png</Icon>
   <ExtraParams/>
   <PostArgs/>
   <CPUset/>
-  <DateInstalled>1580251306</DateInstalled>
-  <DonateText/>
+  <DateInstalled>1602017437</DateInstalled>
+  <DonateText>BTC: 1E8kUsm3qouXdVYvLMjLbw7rXNmN2jZesL</DonateText>
   <DonateLink/>
   <Description>An Alpine Linux Docker container for ndbroadbent's iCloud Photos Downloader writen by boredazfcuk&#xD;
 &#xD;
-Run the following command without quotes in a terminal to generate the 2FA cookie:&#xD;
-(Change the appdata path if necessary)&#xD;
+This version uses keyring based authentication by default. With keyring based authentication is enabled, the script will check for the presence of the keyring file. If it is not there, the script will pause with a warning for 5mins before exiting.&#xD;
+Please connect to the container and run the "/usr/local/bin/sync-icloud.sh" command manually to start the process of saving your password to the keyring. This will invoke 2FA and Apple will text a confirmation code which needs to be entered.&#xD;
 &#xD;
-"docker run -it --rm --network host --env user=user --env user_id=1000 --env group=admins --env group_id=1010 --env apple_id="my@apple_id.com" --env apple_password="PASSWORD" --volume /mnt/user/appdata/icloudpd:/config boredazfcuk/icloudpd"</Description>
+Or run this command from the unRAID Terminal:&#xD;
+"docker exec -it icloudpd /usr/local/bin/sync-icloud.sh"</Description>
   <Networking>
     <Mode>bridge</Mode>
     <Publish/>
@@ -49,43 +51,13 @@ Run the following command without quotes in a terminal to generate the 2FA cooki
   </Data>
   <Environment>
     <Variable>
-      <Value>my@apple_id.com</Value>
+      <Value>your@appleid.com</Value>
       <Name>apple_id</Name>
       <Mode/>
     </Variable>
     <Variable>
-      <Value>usekeyring</Value>
-      <Name>apple_password</Name>
-      <Mode/>
-    </Variable>
-    <Variable>
-      <Value>21600</Value>
+      <Value>86400</Value>
       <Name>synchronisation_interval</Name>
-      <Mode/>
-    </Variable>
-    <Variable>
-      <Value/>
-      <Name>command_line_options</Name>
-      <Mode/>
-    </Variable>
-    <Variable>
-      <Value>2FA</Value>
-      <Name>authentication_type</Name>
-      <Mode/>
-    </Variable>
-    <Variable>
-      <Value>000</Value>
-      <Name>UMASK</Name>
-      <Mode/>
-    </Variable>
-    <Variable>
-      <Value>777</Value>
-      <Name>directory_permissions</Name>
-      <Mode/>
-    </Variable>
-    <Variable>
-      <Value>666</Value>
-      <Name>file_permissions</Name>
       <Mode/>
     </Variable>
     <Variable>
@@ -114,8 +86,38 @@ Run the following command without quotes in a terminal to generate the 2FA cooki
       <Mode/>
     </Variable>
     <Variable>
-      <Value>99</Value>
-      <Name>PUID</Name>
+      <Value>Europe/London</Value>
+      <Name>TZ</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>usekeyring</Value>
+      <Name>apple_password</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value/>
+      <Name>command_line_options</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>2FA</Value>
+      <Name>authentication_type</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>777</Value>
+      <Name>directory_permissions</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>666</Value>
+      <Name>file_permissions</Name>
+      <Mode/>
+    </Variable>
+    <Variable>
+      <Value>000</Value>
+      <Name>UMASK</Name>
       <Mode/>
     </Variable>
     <Variable>
@@ -124,28 +126,28 @@ Run the following command without quotes in a terminal to generate the 2FA cooki
       <Mode/>
     </Variable>
     <Variable>
-      <Value>Europe/Amsterdam</Value>
-      <Name>TZ</Name>
+      <Value>99</Value>
+      <Name>PUID</Name>
       <Mode/>
     </Variable>
   </Environment>
   <Labels/>
-  <Config Name="Apple ID" Target="apple_id" Default="your@appleid.com" Mode="" Description="This is the Apple ID for the account you want to download files for" Type="Variable" Display="always" Required="true" Mask="false">my@apple_id.com</Config>
-  <Config Name="Password" Target="apple_password" Default="usekeyring" Mode="" Description="Use system keyring to store password. For more info check the docker info page. " Type="Variable" Display="always" Required="true" Mask="false">PASSWORD</Config>
+  <Config Name="Apple ID" Target="apple_id" Default="your@appleid.com" Mode="" Description="This is the Apple ID for the account you want to download files for" Type="Variable" Display="always" Required="true" Mask="false">your@appleid.com</Config>
   <Config Name="AppData Config Path" Target="/config" Default="/mnt/user/appdata/icloudpd" Mode="rw" Description="Container Path: /config" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/icloudpd</Config>
-  <Config Name="Synchronisation Interval (seconds)" Target="synchronisation_interval" Default="" Mode="" Description="Container Variable: synchronisation_interval" Type="Variable" Display="always" Required="false" Mask="false">21600</Config>
-  <Config Name="Command Line Options" Target="command_line_options" Default="" Mode="" Description="This is for additional command line options you want to pass to the icloudpd application. https://github.com/ndbroadbent/icloud_photos_downloader#usage" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Synchronisation Interval (seconds)" Target="synchronisation_interval" Default="86400" Mode="" Description="Default is once every 24h." Type="Variable" Display="always" Required="true" Mask="false">86400</Config>
   <Config Name="Data" Target="/home/user/iCloud" Default="/mnt/user/icloud" Mode="rw,slave" Description="Container Path: /home/user/iCloud" Type="Path" Display="always" Required="true" Mask="false"></Config>
-  <Config Name="Authentication Type" Target="authentication_type" Default="2FA" Mode="" Description="2FA or Web Authentication" Type="Variable" Display="always" Required="true" Mask="false">2FA</Config>
-  <Config Name="UMASK" Target="UMASK" Default="000" Mode="" Description="Container Variable: UMASK" Type="Variable" Display="always-hide" Required="true" Mask="false">000</Config>
-  <Config Name="Directory Permissions" Target="directory_permissions" Default="777" Mode="" Description="Container Variable: directory_permissions" Type="Variable" Display="always-hide" Required="false" Mask="false">777</Config>
-  <Config Name="File Permissions" Target="file_permissions" Default="666" Mode="" Description="Container Variable: file_permissions" Type="Variable" Display="always" Required="false" Mask="false">666</Config>
   <Config Name="Notification Type" Target="notification_type" Default="" Mode="" Description="This specifies the method that is used to send notifications. Currently, there are three options available 'Prowl', 'Pushbullet' and 'Telegram'. When the two factor authentication cookie is within 7 days (default) of expiry, a notification will be sent upon synchronization. No more than a single notification will be sent within a 24 hour period unless the container is restarted. This does not include the notification that is sent each time the container is started" Type="Variable" Display="always" Required="false" Mask="false"/>
   <Config Name="Prowl API Key" Target="prowl_api_key" Default="" Mode="" Description="If the notification_type is set to 'Prowl' this is mandatory. This is the API key for your account as generated by the Prowl website" Type="Variable" Display="always" Required="false" Mask="false"/>
   <Config Name="Pushbullet API Key" Target="pushbullet_api_key" Default="" Mode="" Description="If the notification_type is set to 'Pushbullet' this is mandatory. This is the API key for your account as generated by the Pushbullet website" Type="Variable" Display="always" Required="false" Mask="false"/>
   <Config Name="Telegram Token" Target="telegram_token" Default="" Mode="" Description="If the notification_type is set to 'Telegram' this is mandatory. This is the token that was assigned to your account by The Botfather" Type="Variable" Display="always" Required="false" Mask="false"/>
   <Config Name="Telegram Chat ID" Target="telegram_chat_id" Default="" Mode="" Description="If the notification_type is set to 'Telegram' then this is the chat_id for your Telegram bot" Type="Variable" Display="always" Required="false" Mask="false"/>
-  <Config Name="PUID" Target="PUID" Default="" Mode="" Description="Container Variable: PUID" Type="Variable" Display="always-hide" Required="false" Mask="false">99</Config>
-  <Config Name="PGID" Target="PGID" Default="" Mode="" Description="Container Variable: PGID" Type="Variable" Display="always-hide" Required="false" Mask="false">100</Config>
   <Config Name="Time Zone" Target="TZ" Default="Europe/London" Mode="" Description="Container Variable: TZ" Type="Variable" Display="always-hide" Required="false" Mask="false">Europe/London</Config>
+  <Config Name="Password" Target="apple_password" Default="usekeyring" Mode="" Description="Use system keyring to store password. For more info check the docker info page. " Type="Variable" Display="advanced" Required="true" Mask="false">usekeyring</Config>
+  <Config Name="Command Line Options" Target="command_line_options" Default="" Mode="" Description="This is for additional command line options you want to pass to the icloudpd application. https://github.com/ndbroadbent/icloud_photos_downloader#usage" Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="Authentication Type" Target="authentication_type" Default="2FA" Mode="" Description="2FA or Web Authentication" Type="Variable" Display="advanced" Required="true" Mask="false">2FA</Config>
+  <Config Name="Directory Permissions" Target="directory_permissions" Default="777" Mode="" Description="Container Variable: directory_permissions" Type="Variable" Display="advanced-hide" Required="false" Mask="false">777</Config>
+  <Config Name="File Permissions" Target="file_permissions" Default="666" Mode="" Description="Container Variable: file_permissions" Type="Variable" Display="advanced-hide" Required="false" Mask="false">666</Config>
+  <Config Name="UMASK" Target="UMASK" Default="000" Mode="" Description="Container Variable: UMASK" Type="Variable" Display="advanced-hide" Required="true" Mask="false">000</Config>
+  <Config Name="PGID" Target="PGID" Default="" Mode="" Description="Container Variable: PGID" Type="Variable" Display="advanced-hide" Required="false" Mask="false">100</Config>
+  <Config Name="PUID" Target="PUID" Default="" Mode="" Description="Container Variable: PUID" Type="Variable" Display="advanced-hide" Required="false" Mask="false">99</Config>
 </Container>
