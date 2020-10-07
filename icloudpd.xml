@@ -9,13 +9,7 @@
   <Privileged>false</Privileged>
   <Support>https://hub.docker.com/r/boredazfcuk/icloudpd/</Support>
   <Project>https://github.com/Womabre/-unraid-docker-templates</Project>
-  <Overview>An Alpine Linux Docker container for ndbroadbent's iCloud Photos Downloader writen by boredazfcuk&#xD;
-&#xD;
-This version uses keyring based authentication by default. With keyring based authentication is enabled, the script will check for the presence of the keyring file. If it is not there, the script will pause with a warning for 5mins before exiting.&#xD;
-Please connect to the container and run the "/usr/local/bin/sync-icloud.sh" command manually to start the process of saving your password to the keyring. This will invoke 2FA and Apple will text a confirmation code which needs to be entered.&#xD;
-&#xD;
-Or run this command from the unRAID Terminal:&#xD;
-"docker exec -it icloudpd /usr/local/bin/sync-icloud.sh"</Overview>
+  <Overview>An Alpine Linux Docker container for ndbroadbent's iCloud Photos Downloader writen by boredazfcuk. I use it for syncing the photo streams of all the iDevices in my house back to my server because it's the only way of backing up multiple devices to a single location. It uses the system keyring to securely store credentials, has HEIC to JPG conversion capability, and supports Telegram, Prowl, PushBullet and WebHook notifications.</Overview>
   <Category>Backup: Cloud: Downloaders:</Category>
   <WebUI/>
   <TemplateURL>https://raw.githubusercontent.com/Womabre/unraid-docker-templates/master/icloudpd.xml</TemplateURL>
@@ -31,8 +25,11 @@ Or run this command from the unRAID Terminal:&#xD;
 This version uses keyring based authentication by default. With keyring based authentication is enabled, the script will check for the presence of the keyring file. If it is not there, the script will pause with a warning for 5mins before exiting.&#xD;
 Please connect to the container and run the "/usr/local/bin/sync-icloud.sh" command manually to start the process of saving your password to the keyring. This will invoke 2FA and Apple will text a confirmation code which needs to be entered.&#xD;
 &#xD;
+&#xD;
 Or run this command from the unRAID Terminal:&#xD;
-"docker exec -it icloudpd /usr/local/bin/sync-icloud.sh"</Description>
+"docker exec -it icloudpd /usr/local/bin/sync-icloud.sh"&#xD;
+&#xD;
+The launch script will look for a file called "/home/${user}/iCloud/.mounted" (please note the capitalisation) in the destination folder inside the container. If this file is not present, it will not download anything from iCloud. This is so that if the underlying disk/volume/whatever gets unmounted, sync will not occur. This prevents the script from filling up the root volume if the underlying volume isn't mounted for whatever reason. This file MUST be created manually and sync will not start without it.</Description>
   <Networking>
     <Mode>bridge</Mode>
     <Publish/>
