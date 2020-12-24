@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Maintainer>
+  <Icon>https://raw.githubusercontent.com/Womabre/unraid-docker-templates/master/images/132746.jpg</Icon>
+  <Profile>
+    Creator and maintainer of the iCloudPD Docker template.
+  </Profile>
+  <DonateLink>https://paypal.me/wmbreedveld</DonateLink>
+  <DonateText>If you like my work please consider Donating.</DonateText>
+</Maintainer>
