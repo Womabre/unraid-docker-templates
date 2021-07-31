@@ -26,7 +26,7 @@
   <DonateLink />
   <Description>iCloudPD, Alpine Linux Docker container wrriten by [a href="https://github.com/boredazfcuk"]boredazfcuk[/a], syncs photos from iDevices to a single directory on Unraid. It uses the system keyring to securely store credentials, has HEIC to JPG conversion capability, and supports Telegram, Prowl, PushBullet and WebHook notifications.
 
-[br][br][span]It is recommended to use the keyring to securely store credentials. Please connect to the container and run [code]`/usr/local/bin/sync-icloud.sh`[/code] command manually to start the process of saving your password to the keyring and Apple sends a confirmation code via text or 2FA code to your device which needs to be entered into the console.
+[br][br][span]Please connect to the container and run [code]`/usr/local/bin/sync-icloud.sh --Initialise`[/code] command manually to start the process of saving your password to the keyring and Apple sends a confirmation code via text or 2FA code to your device which needs to be entered into the console.
 [/span][/b]
 [br][span]Create a [code]`.mounted`[/code] file inside [code]`iCloud`[/code] folder in the photos directory for the container to start syncing photos. This file MUST be created manually and sync will not start without it.[/span][/b]</Description>
   <Networking>
@@ -88,11 +88,6 @@
       <Mode />
     </Variable>
     <Variable>
-      <Value>usekeyring</Value>
-      <Name>apple_password</Name>
-      <Mode />
-    </Variable>
-    <Variable>
       <Value />
       <Name>command_line_options</Name>
       <Mode />
@@ -139,7 +134,6 @@
   <Config Name="Telegram Token" Target="telegram_token" Default="" Mode="" Description="If the notification_type is set to 'Telegram' this is mandatory. This is the token that was assigned to your account by The Botfather" Type="Variable" Display="always" Required="false" Mask="false" />
   <Config Name="Telegram Chat ID" Target="telegram_chat_id" Default="" Mode="" Description="If the notification_type is set to 'Telegram' then this is the chat_id for your Telegram bot" Type="Variable" Display="always" Required="false" Mask="false" />
   <Config Name="Time Zone" Target="TZ" Default="Europe/London" Mode="" Description="Container Variable: TZ" Type="Variable" Display="always-hide" Required="false" Mask="false">Europe/London</Config>
-  <Config Name="Password" Target="apple_password" Default="usekeyring" Mode="" Description="Use system keyring to store password or enter your iCloud password. For more info check the docker info page. " Type="Variable" Display="advanced" Required="true" Mask="false">usekeyring</Config>
   <Config Name="Command Line Options" Target="command_line_options" Default="" Mode="" Description="This is for additional command line options you want to pass to the icloudpd application. https://github.com/ndbroadbent/icloud_photos_downloader#usage" Type="Variable" Display="advanced" Required="false" Mask="false" />
   <Config Name="Authentication Type" Target="authentication_type" Default="2FA" Mode="" Description="2FA or Web Authentication" Type="Variable" Display="advanced" Required="true" Mask="false">2FA</Config>
   <Config Name="Directory Permissions" Target="directory_permissions" Default="777" Mode="" Description="Container Variable: directory_permissions" Type="Variable" Display="advanced-hide" Required="false" Mask="false">777</Config>
