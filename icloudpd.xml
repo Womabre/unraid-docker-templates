@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Container version="1.2">
+<?xml version="1.0"?>
+<Container version="2">
   <Name>icloudpd</Name>
   <Repository>boredazfcuk/icloudpd</Repository>
   <Registry>https://hub.docker.com/r/boredazfcuk/icloudpd/</Registry>
@@ -9,11 +9,15 @@
   <Privileged>false</Privileged>
   <Support>https://hub.docker.com/r/boredazfcuk/icloudpd/</Support>
   <Project>https://github.com/Womabre/-unraid-docker-templates</Project>
-  <Overview>iCloudPD, Alpine Linux Docker container wrriten by [a href="https://github.com/boredazfcuk"]boredazfcuk[/a], syncs photos from iDevices to a single directory on Unraid. It uses the system keyring to securely store credentials, has HEIC to JPG conversion capability, and supports Telegram, Prowl, PushBullet and WebHook notifications.
-
-[br][br][span]It is recommended to use the keyring to securely store credentials. Please connect to the container and run [code]`/usr/local/bin/sync-icloud.sh`[/code] command manually to start the process of saving your password to the keyring and Apple sends a confirmation code via text or 2FA code to your device which needs to be entered into the console.
-[/span][/b]
-[br][span]Create a [code]`.mounted`[/code] file inside [code]`iCloud`[/code] folder in the photos directory for the container to start syncing photos. This file MUST be created manually and sync will not start without it.[/span][/b]</Overview>
+  <Overview>iCloudPD, Alpine Linux Docker container wrriten by boredazfcuk, syncs photos from iDevices to a single directory on Unraid. It uses the system keyring to securely store credentials, has HEIC to JPG conversion capability, and supports Telegram, Prowl, PushBullet and WebHook notifications.&#xD;
+&#xD;
+&#xD;
+&#xD;
+It is recommended to use the keyring to securely store credentials. Please connect to the container and run `sync-icloud.sh --Initialise` command manually to start the process of saving your password to the keyring and Apple sends a confirmation code via text or 2FA code to your device which needs to be entered into the console.&#xD;
+You can also run this command from the unraid console to start the authentication process. `docker exec -it icloudpd sync-icloud.sh --Initialise`
+&#xD;
+&#xD;
+Create a `.mounted` file inside `iCloud` folder in the photos directory for the container to start syncing photos. This file MUST be created manually and sync will not start without it.</Overview>
   <Category>Backup: Cloud: Downloaders:</Category>
   <WebUI />
   <TemplateURL>https://raw.githubusercontent.com/Womabre/unraid-docker-templates/master/icloudpd.xml</TemplateURL>
@@ -21,124 +25,26 @@
   <ExtraParams />
   <PostArgs />
   <CPUset />
-  <DateInstalled>1602017437</DateInstalled>
-  <DonateText>BTC: 1E8kUsm3qouXdVYvLMjLbw7rXNmN2jZesL</DonateText>
+  <DateInstalled></DateInstalled>
+  <DonateText />
   <DonateLink />
-  <Description>iCloudPD, Alpine Linux Docker container wrriten by [a href="https://github.com/boredazfcuk"]boredazfcuk[/a], syncs photos from iDevices to a single directory on Unraid. It uses the system keyring to securely store credentials, has HEIC to JPG conversion capability, and supports Telegram, Prowl, PushBullet and WebHook notifications.
-
-[br][br][span]Please connect to the container and run [code]`/usr/local/bin/sync-icloud.sh --Initialise`[/code] command manually to start the process of saving your password to the keyring and Apple sends a confirmation code via text or 2FA code to your device which needs to be entered into the console.
-[/span][/b]
-[br][span]Create a [code]`.mounted`[/code] file inside [code]`iCloud`[/code] folder in the photos directory for the container to start syncing photos. This file MUST be created manually and sync will not start without it.[/span][/b]</Description>
-  <Networking>
-    <Mode>bridge</Mode>
-    <Publish />
-  </Networking>
-  <Data>
-    <Volume>
-      <HostDir>/mnt/user/appdata/icloudpd</HostDir>
-      <ContainerDir>/config</ContainerDir>
-      <Mode>rw</Mode>
-    </Volume>
-    <Volume>
-      <HostDir />
-      <Value>/home/user/photos</Value>
-      <ContainerDir>/home/user/iCloud</ContainerDir>
-      <Mode>rw,slave</Mode>
-    </Volume>
-  </Data>
-  <Environment>
-    <Variable>
-      <Value>your@appleid.com</Value>
-      <Name>apple_id</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value>86400</Value>
-      <Name>synchronisation_interval</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value />
-      <Name>notification_type</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value />
-      <Name>prowl_api_key</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value />
-      <Name>pushbullet_api_key</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value />
-      <Name>telegram_token</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value />
-      <Name>telegram_chat_id</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value>Europe/London</Value>
-      <Name>TZ</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value />
-      <Name>command_line_options</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value>2FA</Value>
-      <Name>authentication_type</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value>777</Value>
-      <Name>directory_permissions</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value>666</Value>
-      <Name>file_permissions</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value>000</Value>
-      <Name>UMASK</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value>100</Value>
-      <Name>PGID</Name>
-      <Mode />
-    </Variable>
-    <Variable>
-      <Value>99</Value>
-      <Name>PUID</Name>
-      <Mode />
-    </Variable>
-  </Environment>
-  <Labels />
-  <Config Name="Apple ID" Target="apple_id" Default="your@appleid.com" Mode="" Description="This is the Apple ID for the account you want to download files from" Type="Variable" Display="always" Required="true" Mask="false">your@appleid.com</Config>
-  <Config Name="AppData Config Path" Target="/config" Default="/mnt/user/appdata/icloudpd" Mode="rw" Description="Container Path: /config" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/icloudpd</Config>
-  <Config Name="Synchronisation Interval (seconds)" Target="synchronisation_interval" Default="86400" Mode="" Description="Default is once every 24h." Type="Variable" Display="always" Required="true" Mask="false">86400</Config>
-  <Config Name="Data" Target="/home/user/iCloud" Default="/mnt/user/photos" Mode="rw,slave" Description="Container Path: /home/user/photos" Type="Path" Display="always" Required="true" Mask="false" />
+  <Requires />
+  <Config Name="Apple ID" Target="apple_id" Default="your@appleid.com" Mode="" Description="This is the Apple ID for the account you want to download files from" Type="Variable" Display="always" Required="true" Mask="false"></Config>
+  <Config Name="AppData Config Path" Target="/config" Default="/mnt/user/appdata/icloudpd" Mode="rw" Description="" Type="Path" Display="always" Required="true" Mask="false"></Config>
+  <Config Name="Synchronisation Interval (seconds)" Target="synchronisation_interval" Default="86400" Mode="" Description="Default is once every 24h." Type="Variable" Display="always" Required="true" Mask="false">259200</Config>
+  <Config Name="Data" Target="/home/user/iCloud" Default="/mnt/user/iCloud" Mode="rw,slave" Description="" Type="Path" Display="always" Required="true" Mask="false"></Config>
   <Config Name="Notification Type" Target="notification_type" Default="" Mode="" Description="This specifies the method that is used to send notifications. Currently, there are three options available 'Prowl', 'Pushbullet' and 'Telegram'. When the two factor authentication cookie is within 7 days (default) of expiry, a notification will be sent upon synchronization. No more than a single notification will be sent within a 24 hour period unless the container is restarted. This does not include the notification that is sent each time the container is started" Type="Variable" Display="always" Required="false" Mask="false" />
   <Config Name="Prowl API Key" Target="prowl_api_key" Default="" Mode="" Description="If the notification_type is set to 'Prowl' this is mandatory. This is the API key for your account as generated by the Prowl website" Type="Variable" Display="always" Required="false" Mask="false" />
   <Config Name="Pushbullet API Key" Target="pushbullet_api_key" Default="" Mode="" Description="If the notification_type is set to 'Pushbullet' this is mandatory. This is the API key for your account as generated by the Pushbullet website" Type="Variable" Display="always" Required="false" Mask="false" />
   <Config Name="Telegram Token" Target="telegram_token" Default="" Mode="" Description="If the notification_type is set to 'Telegram' this is mandatory. This is the token that was assigned to your account by The Botfather" Type="Variable" Display="always" Required="false" Mask="false" />
   <Config Name="Telegram Chat ID" Target="telegram_chat_id" Default="" Mode="" Description="If the notification_type is set to 'Telegram' then this is the chat_id for your Telegram bot" Type="Variable" Display="always" Required="false" Mask="false" />
-  <Config Name="Time Zone" Target="TZ" Default="Europe/London" Mode="" Description="Container Variable: TZ" Type="Variable" Display="always-hide" Required="false" Mask="false">Europe/London</Config>
+  <Config Name="Time Zone" Target="TZ" Default="Europe/London" Mode="" Description="" Type="Variable" Display="always-hide" Required="false" Mask="false"></Config>
+  <Config Name="Root" Target="/root" Default="/mnt/user/appdata/icloudpd/root" Mode="rw" Description="" Type="Path" Display="advanced-hide" Required="true" Mask="false">/mnt/user/appdata/icloudpd/root</Config>
   <Config Name="Command Line Options" Target="command_line_options" Default="" Mode="" Description="This is for additional command line options you want to pass to the icloudpd application. https://github.com/ndbroadbent/icloud_photos_downloader#usage" Type="Variable" Display="advanced" Required="false" Mask="false" />
   <Config Name="Authentication Type" Target="authentication_type" Default="2FA" Mode="" Description="2FA or Web Authentication" Type="Variable" Display="advanced" Required="true" Mask="false">2FA</Config>
-  <Config Name="Directory Permissions" Target="directory_permissions" Default="777" Mode="" Description="Container Variable: directory_permissions" Type="Variable" Display="advanced-hide" Required="false" Mask="false">777</Config>
-  <Config Name="File Permissions" Target="file_permissions" Default="666" Mode="" Description="Container Variable: file_permissions" Type="Variable" Display="advanced-hide" Required="false" Mask="false">666</Config>
-  <Config Name="UMASK" Target="UMASK" Default="000" Mode="" Description="Container Variable: UMASK" Type="Variable" Display="advanced-hide" Required="true" Mask="false">000</Config>
-  <Config Name="PGID" Target="PGID" Default="" Mode="" Description="Container Variable: PGID" Type="Variable" Display="advanced-hide" Required="false" Mask="false">100</Config>
-  <Config Name="PUID" Target="PUID" Default="" Mode="" Description="Container Variable: PUID" Type="Variable" Display="advanced-hide" Required="false" Mask="false">99</Config>
+  <Config Name="Directory Permissions" Target="directory_permissions" Default="777" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="false" Mask="false">777</Config>
+  <Config Name="File Permissions" Target="file_permissions" Default="666" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="false" Mask="false">666</Config>
+  <Config Name="UMASK" Target="UMASK" Default="000" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="true" Mask="false">000</Config>
+  <Config Name="PGID" Target="PGID" Default="" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="false" Mask="false">100</Config>
+  <Config Name="PUID" Target="PUID" Default="" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="false" Mask="false">99</Config>
 </Container>
