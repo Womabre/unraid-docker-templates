@@ -11,7 +11,8 @@
   <Project>https://github.com/Womabre/-unraid-docker-templates</Project>
   <Overview>An Alpine Linux Docker container for ndbroadbent's iCloud Photos Downloader. I use it for syncing the photo streams of all the iDevices in my house back to my server because it's the only way of backing up multiple devices to a single location. It uses the system keyring to securely store credentials, has HEIC to JPG conversion capability, and can send Telegram, Prowl, Pushover, WebHook, DingTalk, Discord, openhab, IYUU and WeCom notifications.&#xD;
 &#xD;
-It is recommended to use the keyring to securely store credentials. Please connect to the container and run `/usr/local/bin/sync-icloud.sh --Initialise` command manually to start the process of saving your password to the keyring and Apple sends a confirmation code via text or 2FA code to your device which needs to be entered into the console.&#xD;
+It is recommended to use the keyring to securely store credentials. Please connect to the container and run `sync-icloud.sh --Initialise` command manually to start the process of saving your password to the keyring and Apple sends a confirmation code via text or 2FA code to your device which needs to be entered into the console.&#xD;
+You can also run this command from the unraid console to start the authentication process. `docker exec -it icloudpd sync-icloud.sh --Initialise`&#xD;
 &#xD;
 Create a `.mounted` file inside `iCloud` folder in the photos directory for the container to start syncing photos. This file MUST be created manually and sync will not start without it.</Overview>
   <Category>Backup: Cloud: Downloaders:</Category>
