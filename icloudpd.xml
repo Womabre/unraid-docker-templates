@@ -95,6 +95,6 @@ Create a `.mounted` file inside `iCloud` folder in the photos directory for the 
   <Config Name="Directory Permissions" Target="directory_permissions" Default="777" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="false" Mask="false">777</Config>
   <Config Name="File Permissions" Target="file_permissions" Default="666" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="false" Mask="false">666</Config>
   <Config Name="UMASK" Target="UMASK" Default="000" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="true" Mask="false">000</Config>
-  <Config Name="PGID" Target="PGID" Default="" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="false" Mask="false">100</Config>
-  <Config Name="PUID" Target="PUID" Default="" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="false" Mask="false">99</Config>
+  <Config Name="PGID" Target="group_id" Default="" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="false" Mask="false">100</Config>
+  <Config Name="PUID" Target="user_id" Default="" Mode="" Description="" Type="Variable" Display="advanced-hide" Required="false" Mask="false">99</Config>
 </Container>
