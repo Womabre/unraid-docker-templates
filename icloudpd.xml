@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Container version="3">
+<Container version="4">
   <Name>icloudpd</Name>
   <Repository>boredazfcuk/icloudpd</Repository>
   <Registry>https://hub.docker.com/r/boredazfcuk/icloudpd/</Registry>
@@ -26,102 +26,161 @@
   <DonateText />
   <DonateLink />
   <Requires />
+
+  <!-- Core Settings -->
   <Config Name="Apple ID" Target="apple_id" Default="your@appleid.com" Mode="" Description="Apple ID used to access iCloud." Type="Variable" Display="always" Required="true" Mask="false" />
   <Config Name="Time Zone" Target="TZ" Default="UTC" Mode="" Description="Sets container timezone. Example: Europe/Amsterdam" Type="Variable" Display="always" Required="true" Mask="false" />
   <Config Name="Config Path" Target="/config" Default="/mnt/user/appdata/icloudpd" Mode="rw" Description="Stores configuration, cookies, and keyring." Type="Path" Display="always" Required="true" Mask="false" />
-  <Config Name="Download Path" Target="/home/user/iCloud" Default="/mnt/user/iCloud" Mode="rw,slave" Description="Where downloaded photos and videos will be stored." Type="Path" Display="always" Required="true" Mask="false" />
+  <Config Name="Download Path" Target="/home/user/iCloud" Default="/mnt/user/iCloud" Mode="rw,slave" Description="Where downloaded photos and videos will be stored. A .mounted file must exist inside this folder before syncing will start." Type="Path" Display="always" Required="true" Mask="false" />
 
   <!-- Sync Configuration -->
-  <Config Name="Download Interval" Target="download_interval" Default="86400" Mode="" Description="Seconds between downloads. Valid: 21600, 43200, 86400, etc." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Download Delay" Target="download_delay" Default="0" Mode="" Description="Delay first download in minutes (0-60)." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Folder Structure" Target="folder_structure" Default="{:%Y/%m/%d}" Mode="" Description="Folder structure for downloaded files." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Albums With Dates" Target="albums_with_dates" Default="false" Mode="" Description="Organize albums into subfolders by date." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Libraries With Dates" Target="libraries_with_dates" Default="false" Mode="" Description="Organize libraries into subfolders by date." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Authentication Type" Target="authentication_type" Default="MFA" Mode="" Description="Use 'MFA' or 'Web'." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Notification Days" Target="notification_days" Default="7" Mode="" Description="Notify n days before MFA cookie expires." Type="Variable" Display="advanced" Required="false" Mask="false" />
-
-  <!-- Conversion -->
-  <Config Name="Convert HEIC to JPEG" Target="convert_heic_to_jpeg" Default="false" Mode="" Description="Convert HEIC images to JPEG." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="JPEG Quality" Target="jpeg_quality" Default="90" Mode="" Description="JPEG conversion quality (0-100)." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="JPEG Path" Target="jpeg_path" Default="" Mode="" Description="Custom path for JPEGs. Defaults to download path." Type="Variable" Display="advanced" Required="false" Mask="false" />
-
-  <!-- Cleanup Options -->
-  <Config Name="Skip Check" Target="skip_check" Default="false" Mode="" Description="Skip file existence check for large libraries." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Delete Accompanying Files" Target="delete_accompanying" Default="false" Mode="" Description="Delete generated JPG and MOV files that accompany HEICs." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Delete Empty Directories" Target="delete_empty_directories" Default="false" Mode="" Description="Delete empty directories after sync." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Set Exif DateTime" Target="set_exif_datetime" Default="false" Mode="" Description="Write DateTimeOriginal EXIF from file date." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Download Interval" Target="download_interval" Default="86400" Mode="" Description="Seconds between downloads. Valid values: 21600 (6h), 43200 (12h), 86400 (24h), 129600 (36h), 172800 (48h), 604800 (7d). Defaults to 86400 if an invalid value is set." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Download Delay" Target="download_delay" Default="0" Mode="" Description="Delay first download in minutes (0-60). Use to stagger multiple containers." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Folder Structure" Target="folder_structure" Default="{:%Y/%m/%d}" Mode="" Description="Folder structure for downloaded files. Use 'none' for a flat structure. Default: {:%Y/%m/%d}" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Albums With Dates" Target="albums_with_dates" Default="false" Mode="" Description="Organize albums into subfolders by date (uses folder_structure). Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Libraries With Dates" Target="libraries_with_dates" Default="false" Mode="" Description="Organize libraries into subfolders by date (uses folder_structure). Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Authentication Type" Target="authentication_type" Default="MFA" Mode="" Description="Type of authentication on your iCloud account. Use 'MFA' or 'Web' (if no MFA). Default: MFA" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Notification Days" Target="notification_days" Default="7" Mode="" Description="Notify n days before MFA cookie expires. A single notification is sent per day. Default: 7" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Single Pass" Target="single_pass" Default="false" Mode="" Description="Set to true to exit after a single sync instead of looping. If used, set container restart policy to 'no'." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Skip Check" Target="skip_check" Default="false" Mode="" Description="Skip the check for new files. Recommended for libraries with more than a few thousand photos. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
 
   <!-- Photo Selection -->
-  <Config Name="Photo Size" Target="photo_size" Default="original" Mode="" Description="Size to download: original, medium, thumb, adjusted, alternative." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Skip Live Photos" Target="skip_live_photos" Default="false" Mode="" Description="Skip downloading Live Photos." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Skip Videos" Target="skip_videos" Default="false" Mode="" Description="Skip downloading videos." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Recent Only" Target="recent_only" Default="" Mode="" Description="Only download this number of recent photos." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Until Found" Target="until_found" Default="" Mode="" Description="Download recent photos until n previously found." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Photo Album" Target="photo_album" Default="" Mode="" Description="Download only from specific album(s). Comma separated." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Photo Library" Target="photo_library" Default="" Mode="" Description="Download only from specific library/libraries." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Photo Size" Target="photo_size" Default="original" Mode="" Description="Size to download: original, medium, thumb, adjusted, alternative. Can be comma-separated for multiple sizes. Default: original" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Skip Live Photos" Target="skip_live_photos" Default="false" Mode="" Description="Skip downloading Live Photos. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Live Photo Size" Target="live_photo_size" Default="original" Mode="" Description="Live photo size: original, medium, or thumb. Ignored if skip_live_photos is true. Default: original" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Skip Videos" Target="skip_videos" Default="false" Mode="" Description="Skip downloading videos. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Recent Only" Target="recent_only" Default="" Mode="" Description="Only download this number of recently added photos. Leave empty to download all." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Until Found" Target="until_found" Default="" Mode="" Description="Download recent photos until n previously downloaded consecutive photos are found. Leave empty to download all." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Photo Album" Target="photo_album" Default="" Mode="" Description="Download only from specific album(s). Comma-separated. Use 'all albums' to download all albums." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Skip Album" Target="skip_album" Default="" Mode="" Description="Skip specific albums when using photo_album. Example: All Photos,Videos,Screenshots" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Photo Library" Target="photo_library" Default="" Mode="" Description="Download only from specific shared library/libraries. Comma-separated. Use 'all libraries' to download all." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Skip Library" Target="skip_library" Default="" Mode="" Description="Skip specific libraries when using photo_library. Example: PrimarySync" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Align RAW" Target="align_raw" Default="as-is" Mode="" Description="For assets with RAW and JPEG, treat RAW in specified size: original, alternative, or as-is. Default: as-is" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="File Match Policy" Target="file_match_policy" Default="name-size-dedup-with-suffix" Mode="" Description="Policy to identify and de-duplicate files. Options: name-size-dedup-with-suffix, name-id7. Default: name-size-dedup-with-suffix" Type="Variable" Display="advanced" Required="false" Mask="false" />
+
+  <!-- Conversion -->
+  <Config Name="Convert HEIC to JPEG" Target="convert_heic_to_jpeg" Default="false" Mode="" Description="Convert downloaded HEIC files to JPEG, retaining the original. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="JPEG Quality" Target="jpeg_quality" Default="90" Mode="" Description="JPEG conversion quality (0-100). Default: 90" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="JPEG Path" Target="jpeg_path" Default="" Mode="" Description="Custom path for converted JPEGs. Defaults to download path if not set." Type="Variable" Display="advanced" Required="false" Mask="false" />
+
+  <!-- Cleanup Options -->
+  <Config Name="Auto Delete" Target="auto_delete" Default="false" Mode="" Description="Scan 'Recently Deleted' folder and delete those files locally. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Delete After Download" Target="delete_after_download" Default="false" Mode="" Description="Move file to Recently Deleted after download. Cannot be combined with auto_delete. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Delete Accompanying Files" Target="delete_accompanying" Default="false" Mode="" Description="Delete generated JPG and MOV files that accompany HEICs (live photo MOVs, converted JPEGs). Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Delete Empty Directories" Target="delete_empty_directories" Default="false" Mode="" Description="Delete empty directories after sync. Only runs if folder_structure is not 'none'. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Set Exif DateTime" Target="set_exif_datetime" Default="false" Mode="" Description="Write DateTimeOriginal EXIF tag from file creation date. Warning: alters local file and causes re-download with dedup suffix. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Keep Unicode" Target="keep_unicode" Default="false" Mode="" Description="Keep unicode characters in file names. Set to false to strip non-ASCII chars. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Live Photo MOV Filename Policy" Target="live_photo_mov_filename_policy" Default="suffix" Mode="" Description="Filename policy for Live Photo MOV files: suffix (adds _HEVC) or original (same name as photo). Default: suffix" Type="Variable" Display="advanced" Required="false" Mask="false" />
+
+  <!-- Video Sideways Copy -->
+  <Config Name="Sideways Copy Videos" Target="sideways_copy_videos" Default="false" Mode="" Description="Copy or move downloaded videos to a separate directory (video_path). Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Sideways Copy Videos Mode" Target="sideways_copy_videos_mode" Default="copy" Mode="" Description="How to handle sideways video copy: 'copy' (leave original) or 'move' (requires delete_after_download=true). Default: copy" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Video Path" Target="video_path" Default="" Mode="" Description="Destination directory for sideways video copy/move. Required when sideways_copy_videos is true." Type="Variable" Display="advanced" Required="false" Mask="false" />
 
   <!-- Nextcloud -->
-  <Config Name="Nextcloud Upload" Target="nextcloud_upload" Default="false" Mode="" Description="Enable upload to Nextcloud." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Nextcloud URL" Target="nextcloud_url" Default="" Mode="" Description="Nextcloud server URL." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Nextcloud Username" Target="nextcloud_username" Default="" Mode="" Description="Username for Nextcloud." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Nextcloud Password" Target="nextcloud_password" Default="" Mode="" Description="Password for Nextcloud." Type="Variable" Display="advanced" Required="false" Mask="true" />
-  <Config Name="Nextcloud Target Dir" Target="nextcloud_target_dir" Default="" Mode="" Description="Target root folder in Nextcloud." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Nextcloud Delete" Target="nextcloud_delete" Default="false" Mode="" Description="Delete file from Nextcloud if removed locally." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Nextcloud Upload" Target="nextcloud_upload" Default="false" Mode="" Description="Enable upload to Nextcloud after download. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Nextcloud URL" Target="nextcloud_url" Default="" Mode="" Description="Nextcloud server URL. Example: https://my.server.local/nextcloud/" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Nextcloud Username" Target="nextcloud_username" Default="" Mode="" Description="Username of the Nextcloud account to upload to." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Nextcloud Password" Target="nextcloud_password" Default="" Mode="" Description="Password for the Nextcloud account." Type="Variable" Display="advanced" Required="false" Mask="true" />
+  <Config Name="Nextcloud Target Dir" Target="nextcloud_target_dir" Default="" Mode="" Description="Root folder in Nextcloud to place files in. Cannot be the root of the server." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Nextcloud Delete" Target="nextcloud_delete" Default="false" Mode="" Description="Delete file from Nextcloud when removed locally. Requires auto_delete=true. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
 
-  <!-- Notification Providers -->
-  <Config Name="Send Notify" Target="notify" Default="false" Mode="" Description="Enable notifications after operations (MFA expiry, download, etc)." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <!-- Notification Provider -->
+  <Config Name="Notification Type" Target="notification_type" Default="" Mode="" Description="Notification provider to use. Options: Prowl, Pushover, Telegram, Webhook, openhab, Dingtalk, Discord, IYUU, WeCom, Gotify, Bark, msmtp, signal. Leave empty to disable." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Notification Title" Target="notification_title" Default="boredazfcuk/iCloudPD" Mode="" Description="Title used in notifications. Default: boredazfcuk/iCloudPD" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Download Notifications" Target="download_notifications" Default="true" Mode="" Description="Send notifications with a summary after file downloads. Default: true" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Delete Notifications" Target="delete_notifications" Default="true" Mode="" Description="Send notifications with a summary after file deletions. Default: true" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Startup Notification" Target="startup_notification" Default="true" Mode="" Description="Send a notification when the container starts. Default: true" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Silent File Notifications" Target="silent_file_notifications" Default="false" Mode="" Description="Send low-priority (silent) notifications for file downloads and deletions. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
 
-  <!-- SMTP Notification -->
-  <Config Name="SMTP Host" Target="smtp_hostname" Default="" Mode="" Description="SMTP server hostname." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="SMTP Port" Target="smtp_port" Default="587" Mode="" Description="SMTP server port." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="SMTP Username" Target="smtp_username" Default="" Mode="" Description="SMTP login username." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="SMTP Password" Target="smtp_password" Default="" Mode="" Description="SMTP login password." Type="Variable" Display="advanced" Required="false" Mask="true" />
-  <Config Name="SMTP From Address" Target="smtp_from_address" Default="icloudpd@container" Mode="" Description="From address for sent emails." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="SMTP To Address" Target="smtp_to_address" Default="" Mode="" Description="Comma-separated list of recipient addresses." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="SMTP Subject" Target="smtp_subject" Default="iCloudPD Notification" Mode="" Description="Email subject line." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <!-- msmtp (SMTP) Notification -->
+  <Config Name="msmtp Host" Target="msmtp_host" Default="" Mode="" Description="[msmtp] SMTP server hostname." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="msmtp Port" Target="msmtp_port" Default="587" Mode="" Description="[msmtp] SMTP server port. Normally 465 or 587. Default: 587" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="msmtp Username" Target="msmtp_user" Default="" Mode="" Description="[msmtp] SMTP login username." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="msmtp Password" Target="msmtp_pass" Default="" Mode="" Description="[msmtp] SMTP login password." Type="Variable" Display="advanced" Required="false" Mask="true" />
+  <Config Name="msmtp From Address" Target="msmtp_from" Default="" Mode="" Description="[msmtp] Sender email address." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="msmtp TLS" Target="msmtp_tls" Default="on" Mode="" Description="[msmtp] Enable TLS encryption: on or off. Default: on" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="msmtp Auth" Target="msmtp_auth" Default="on" Mode="" Description="[msmtp] Enable SMTP authentication: on or off. Default: on" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="msmtp Extra Args" Target="msmtp_args" Default="" Mode="" Description="[msmtp] Optional extra arguments for msmtp. Example: --tls-starttls=off" Type="Variable" Display="advanced" Required="false" Mask="false" />
 
   <!-- Gotify Notification -->
-  <Config Name="Gotify URL" Target="gotify_url" Default="" Mode="" Description="Base URL for Gotify server." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Gotify Token" Target="gotify_token" Default="" Mode="" Description="Application token for Gotify." Type="Variable" Display="advanced" Required="false" Mask="true" />
-  <Config Name="Gotify Priority" Target="gotify_priority" Default="0" Mode="" Description="Message priority (0-10)." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Gotify Server URL" Target="gotify_server_url" Default="" Mode="" Description="[Gotify] Server hostname. Example: server.domain.tld (no port, no protocol). Use gotify_https to toggle HTTPS." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Gotify App Token" Target="gotify_app_token" Default="" Mode="" Description="[Gotify] Application token for Gotify." Type="Variable" Display="advanced" Required="false" Mask="true" />
+  <Config Name="Gotify HTTPS" Target="gotify_https" Default="false" Mode="" Description="[Gotify] Use HTTPS for Gotify server URL. Default: false (HTTP)" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Gotify Priority" Target="gotify_priority" Default="0" Mode="" Description="[Gotify] Message priority (0-10). Default: 0" Type="Variable" Display="advanced" Required="false" Mask="false" />
 
   <!-- Signal Notification -->
-  <Config Name="Signal CLI Number" Target="signal_cli_number" Default="" Mode="" Description="Your registered Signal number." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Signal Recipients" Target="signal_cli_recipients" Default="" Mode="" Description="Comma-separated list of Signal recipient numbers." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Signal Host" Target="signal_host" Default="" Mode="" Description="[Signal] Hostname of the bbernhard/signal-cli-rest-api container." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Signal Port" Target="signal_port" Default="" Mode="" Description="[Signal] Port the signal-cli-rest-api container listens on." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Signal Number" Target="signal_number" Default="" Mode="" Description="[Signal] Phone number of the Signal device to send from." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Signal Recipient" Target="signal_recipient" Default="" Mode="" Description="[Signal] Recipient phone number for Signal messages." Type="Variable" Display="advanced" Required="false" Mask="false" />
 
   <!-- Bark Notification -->
-  <Config Name="Bark URL" Target="bark_url" Default="" Mode="" Description="Full Bark push URL." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Bark URL" Target="bark_url" Default="" Mode="" Description="[Bark] Full Bark push URL. For the official server use: api.day.app" Type="Variable" Display="advanced" Required="false" Mask="false" />
 
   <!-- Pushover Notification -->
-  <Config Name="Pushover Token" Target="pushover_token" Default="" Mode="" Description="Pushover app token." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Pushover User Key" Target="pushover_user" Default="" Mode="" Description="Pushover user key." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Pushover Priority" Target="pushover_priority" Default="0" Mode="" Description="Priority: -1, 0, 1, or 2." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Pushover Retry" Target="pushover_retry" Default="60" Mode="" Description="Retry interval (priority 2 only)." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Pushover Expire" Target="pushover_expire" Default="3600" Mode="" Description="Notification expiration (priority 2 only)." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Pushover Token" Target="pushover_token" Default="" Mode="" Description="[Pushover] Application API token." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Pushover User Key" Target="pushover_user" Default="" Mode="" Description="[Pushover] Pushover user key." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Pushover Priority" Target="pushover_priority" Default="0" Mode="" Description="[Pushover] Priority: -1, 0, 1, or 2. Default: 0" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Pushover Retry" Target="pushover_retry" Default="60" Mode="" Description="[Pushover] Retry interval in seconds (priority 2 only). Default: 60" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Pushover Expire" Target="pushover_expire" Default="3600" Mode="" Description="[Pushover] Notification expiration in seconds (priority 2 only). Default: 3600" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Pushover Sound" Target="pushover_sound" Default="" Mode="" Description="[Pushover] Custom notification sound. See https://pushover.net/api#sounds for values." Type="Variable" Display="advanced" Required="false" Mask="false" />
 
   <!-- Healthchecks Notification -->
-  <Config Name="Healthchecks URL" Target="healthchecks_url" Default="" Mode="" Description="Full ping URL for Healthchecks.io." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Healthchecks URL" Target="healthchecks_url" Default="" Mode="" Description="[Healthchecks] Full ping URL for Healthchecks.io." Type="Variable" Display="advanced" Required="false" Mask="false" />
+
+  <!-- Webhook / openhab Notification -->
+  <Config Name="Webhook Server" Target="webhook_server" Default="" Mode="" Description="[Webhook/openhab] Hostname of the webhook server." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Webhook Port" Target="webhook_port" Default="8123" Mode="" Description="[Webhook/openhab] Port for the webhook server. Default: 8123" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Webhook Path" Target="webhook_path" Default="/api/webhook/" Mode="" Description="[Webhook/openhab] Path on the webhook server. Must start and end with /. Default: /api/webhook/" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Webhook ID" Target="webhook_id" Default="" Mode="" Description="[Webhook/openhab] Webhook ID. For openhab use 'state'." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Webhook HTTPS" Target="webhook_https" Default="false" Mode="" Description="[Webhook/openhab] Use HTTPS. Default: false (HTTP)" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Webhook Body" Target="webhook_body" Default="data" Mode="" Description="[Webhook] Body key for the webhook request. HA=data, Discord=content, IFTTT=value1. Default: data" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Webhook Insecure" Target="webhook_insecure" Default="false" Mode="" Description="[Webhook] Allow insecure HTTPS certificates (e.g. self-signed). Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+
+  <!-- Telegram Notification -->
+  <Config Name="Telegram Token" Target="telegram_token" Default="" Mode="" Description="[Telegram] Bot token from BotFather." Type="Variable" Display="advanced" Required="false" Mask="true" />
+  <Config Name="Telegram Chat ID" Target="telegram_chat_id" Default="" Mode="" Description="[Telegram] Chat ID for the bot. Prefix with - for group chats." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Telegram Polling" Target="telegram_polling" Default="false" Mode="" Description="[Telegram] Enable polling to allow remote sync/auth via chat messages. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Telegram Silent Notifications" Target="telegram_silent_file_notifications" Default="false" Mode="" Description="[Telegram] Send file download notifications silently. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Telegram Server" Target="telegram_server" Default="" Mode="" Description="[Telegram] Proxy server FQDN if Telegram is blocked in your country." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Telegram HTTP" Target="telegram_http" Default="false" Mode="" Description="[Telegram] Use HTTP instead of HTTPS if Telegram is restricted to HTTP only. Default: false" Type="Variable" Display="advanced" Required="false" Mask="false" />
+
+  <!-- Prowl Notification -->
+  <Config Name="Prowl API Key" Target="prowl_api_key" Default="" Mode="" Description="[Prowl] API key from the Prowl website." Type="Variable" Display="advanced" Required="false" Mask="true" />
+
+  <!-- DingTalk Notification -->
+  <Config Name="DingTalk Token" Target="dingtalk_token" Default="" Mode="" Description="[DingTalk] Access token from DingTalk app Security Settings." Type="Variable" Display="advanced" Required="false" Mask="true" />
+
+  <!-- Discord Notification -->
+  <Config Name="Discord ID" Target="discord_id" Default="" Mode="" Description="[Discord] First part of the Discord webhook URL (numbers only)." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Discord Token" Target="discord_token" Default="" Mode="" Description="[Discord] Second part of the Discord webhook URL." Type="Variable" Display="advanced" Required="false" Mask="true" />
+
+  <!-- IYUU Notification -->
+  <Config Name="IYUU Token" Target="iyuu_token" Default="" Mode="" Description="[IYUU] Access token for IYUU notifications." Type="Variable" Display="advanced" Required="false" Mask="true" />
 
   <!-- CLI Flags as Config Options -->
-  <Config Name="Initialise Keyring" Target="initialise" Default="false" Mode="" Description="Run password/keyring setup and create MFA cookie." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Convert All HEICs" Target="convert_all_heics" Default="false" Mode="" Description="Convert HEICs that do not have corresponding JPEGs." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Force Convert All HEICs" Target="force_convert_all_heics" Default="false" Mode="" Description="Convert all HEICs regardless of JPEG presence." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Force Convert All HEICs in /mnt" Target="force_convert_all_mnt_heics" Default="false" Mode="" Description="Convert all HEICs in /mnt path." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Remove All JPGs" Target="remove_all_jpgs" Default="false" Mode="" Description="Remove all JPEGs with HEIC source files." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Correct JPEG Time Stamps" Target="correct_jpeg_time_stamps" Default="false" Mode="" Description="Correct JPEG timestamps to match their HEICs." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Remove Keyring" Target="remove_keyring" Default="false" Mode="" Description="Delete stored password and keyring data." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Initialise Keyring" Target="initialise" Default="false" Mode="" Description="Run password/keyring setup and create MFA cookie on next start." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Convert All HEICs" Target="convert_all_heics" Default="false" Mode="" Description="Convert HEICs that do not have a corresponding JPEG." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Force Convert All HEICs" Target="force_convert_all_heics" Default="false" Mode="" Description="Convert all HEICs regardless of existing JPEG presence. 2-minute delay before running." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Force Convert All HEICs in /mnt" Target="force_convert_all_mnt_heics" Default="false" Mode="" Description="Convert all HEICs in /mnt path. 2-minute delay before running." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Remove All JPGs" Target="remove_all_jpgs" Default="false" Mode="" Description="Remove all JPEGs that have a matching HEIC source file." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Correct JPEG Time Stamps" Target="correct_jpeg_time_stamps" Default="false" Mode="" Description="Correct JPEG timestamps to match their accompanying HEIC files." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Remove Keyring" Target="remove_keyring" Default="false" Mode="" Description="Delete stored password and keyring data. Use when changing Apple ID password." Type="Variable" Display="advanced" Required="false" Mask="false" />
   <Config Name="Enable Debugging" Target="enable_debugging" Default="false" Mode="" Description="Enable verbose debug output." Type="Variable" Display="advanced" Required="false" Mask="false" />
   <Config Name="Disable Debugging" Target="disable_debugging" Default="false" Mode="" Description="Disable debug logging." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Upload to Nextcloud" Target="upload_library_to_nextcloud" Default="false" Mode="" Description="Force upload entire library to Nextcloud." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="Sideways Copy All Videos" Target="sideways_copy_all_videos" Default="false" Mode="" Description="Copy/move all videos based on settings." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="List Albums" Target="list_albums" Default="false" Mode="" Description="List all albums in the iCloud account." Type="Variable" Display="advanced" Required="false" Mask="false" />
-  <Config Name="List Libraries" Target="list_libraries" Default="false" Mode="" Description="List all shared libraries in the account." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Upload Library to Nextcloud" Target="upload_library_to_nextcloud" Default="false" Mode="" Description="Force upload entire local library to Nextcloud." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="Sideways Copy All Videos" Target="sideways_copy_all_videos" Default="false" Mode="" Description="Copy or move all videos in download path to video_path." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="List Albums" Target="list_albums" Default="false" Mode="" Description="List all albums available in the iCloud account." Type="Variable" Display="advanced" Required="false" Mask="false" />
+  <Config Name="List Libraries" Target="list_libraries" Default="false" Mode="" Description="List all shared libraries available in the iCloud account." Type="Variable" Display="advanced" Required="false" Mask="false" />
 
   <!-- User and Permission Settings -->
-  <Config Name="User" Target="user" Default="user" Mode="" Description="Container user name (e.g. 'nobody')" Type="Variable" Display="advanced-hide" Required="false" Mask="false" />
+  <Config Name="User" Target="user" Default="user" Mode="" Description="Container user name (e.g. 'nobody'). Also used as the Telegram remote-sync trigger word." Type="Variable" Display="advanced-hide" Required="false" Mask="false" />
   <Config Name="User ID (PUID)" Target="user_id" Default="1000" Mode="" Description="User ID to match permissions on host." Type="Variable" Display="advanced-hide" Required="false" Mask="false" />
   <Config Name="Group" Target="group" Default="group" Mode="" Description="Group name for file permissions." Type="Variable" Display="advanced-hide" Required="false" Mask="false" />
   <Config Name="Group ID (PGID)" Target="group_id" Default="1000" Mode="" Description="Group ID to match host group." Type="Variable" Display="advanced-hide" Required="false" Mask="false" />
-  <Config Name="Force GID" Target="force_gid" Default="" Mode="" Description="Allow pre-existing group IDs inside container." Type="Variable" Display="advanced-hide" Required="false" Mask="false" />
+  <Config Name="Force GID" Target="force_gid" Default="" Mode="" Description="Allow creation of a group with a pre-existing group ID. Use with caution." Type="Variable" Display="advanced-hide" Required="false" Mask="false" />
+  <Config Name="Directory Permissions" Target="directory_permissions" Default="750" Mode="" Description="Permissions to set on directories in the download destination. Default: 750" Type="Variable" Display="advanced-hide" Required="false" Mask="false" />
+  <Config Name="File Permissions" Target="file_permissions" Default="640" Mode="" Description="Permissions to set on downloaded files. Default: 640" Type="Variable" Display="advanced-hide" Required="false" Mask="false" />
 
 </Container>
