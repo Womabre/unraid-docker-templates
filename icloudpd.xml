@@ -32,7 +32,8 @@
   <Config Name="Time Zone" Target="TZ" Default="UTC" Mode="" Description="Sets container timezone. Example: Europe/Amsterdam" Type="Variable" Display="always" Required="true" Mask="false" />
   <Config Name="Config Path" Target="/config" Default="/mnt/user/appdata/icloudpd" Mode="rw" Description="Stores configuration, cookies, and keyring." Type="Path" Display="always" Required="true" Mask="false" />
   <Config Name="Download Path" Target="/home/user/iCloud" Default="/mnt/user/iCloud" Mode="rw,slave" Description="Where downloaded photos and videos will be stored. A .mounted file must exist inside this folder before syncing will start." Type="Path" Display="always" Required="true" Mask="false" />
-
+  <Config Name="Internal Download Path" Target="download_path" Default="/home/user/iCloud" Mode="" Description="Internal destination used by icloudpd. This must match the container side of the Download Path mapping. Required so first-run configuration does not leave download_path blank." Type="Variable" Display="advanced-hide" Required="true" Mask="false" />
+  
   <!-- Sync Configuration -->
   <Config Name="Download Interval" Target="download_interval" Default="86400" Mode="" Description="Seconds between downloads. Valid values: 21600 (6h), 43200 (12h), 86400 (24h), 129600 (36h), 172800 (48h), 604800 (7d). Defaults to 86400 if an invalid value is set." Type="Variable" Display="advanced" Required="false" Mask="false" />
   <Config Name="Download Delay" Target="download_delay" Default="0" Mode="" Description="Delay first download in minutes (0-60). Use to stagger multiple containers." Type="Variable" Display="advanced" Required="false" Mask="false" />
